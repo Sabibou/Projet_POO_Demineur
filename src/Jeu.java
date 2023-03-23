@@ -15,7 +15,7 @@ public class Jeu {
         this.plate = new Grille(dimension, (float)pourcentMine/100);
         this.plate.fillMine();
     }
-    
+
     private void play(){
 
         int dimension = Integer.parseInt(cons.readLine("Choississez une dimension :"));
@@ -26,22 +26,33 @@ public class Jeu {
         int state = 0; //0:jeu continu, -1:perdu, 1:gagne
         int x;
         int y;
+        String action;
 
         while(state == 0){
 
             cons.format(this.plate.toString());
 
-            do{
+            action = cons.readLine("\nQue faire ?\n j : jouer coup\n s : sauvegarder\n");
 
-                x = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
-            }while(x > dimension && x < 1);
+            if(action.equals("j")){
 
-            do{
+                do{
 
-                y = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
-            }while(y > dimension && y < 1);
+                    x = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
+                }while(x > dimension && x < 1);
+    
+                do{
+    
+                    y = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
+                }while(y > dimension && y < 1);
 
-            state = this.plate.uncover(x, y) > 0 ? this.plate.isAllDiscorvered() : -1;
+                state = this.plate.uncover(x, y) > 0 ? this.plate.isAllDiscorvered() : -1;
+            }
+            else{
+
+                this.plate.save();
+            }
+
         }
 
         cons.format(this.plate.toString());

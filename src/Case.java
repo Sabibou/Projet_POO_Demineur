@@ -24,6 +24,11 @@ public class Case{
         return this.voisins.get(d);
     }
 
+    public int getEtat(){
+
+        return this.etat;
+    }
+
     private void createLink(Direction d, Case c, boolean recursive){
 
         if(c != null){
