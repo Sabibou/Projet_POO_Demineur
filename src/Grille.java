@@ -137,8 +137,10 @@ public class Grille {
                 c = c.getVoisin(Direction.HAUT);
             }
         }
-
-        return c.uncover();
+        int nbUncover = c.uncover();
+        this.discovered += nbUncover; 
+        
+        return nbUncover;
     }
 
     public int isAllDiscorvered(){
