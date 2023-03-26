@@ -10,26 +10,28 @@ public class Jeu {
         this.cons = System.console();
     }
 
-    private void initPlate(int dimension, int pourcentMine){
+    private void initPlate(int nbRow, int nbColumn, int pourcentMine){
 
-        this.plate = new Grille(dimension, (float)pourcentMine/100);
+        this.plate = new Grille(nbRow, nbColumn, (float)pourcentMine/100);
         this.plate.fillMine();
     }
 
     private void play(){
 
-        int dimension = Integer.parseInt(cons.readLine("Choississez une dimension :"));
+        int nbRow = Integer.parseInt(cons.readLine("Choississez un nombre de lignes :"));
+        int nbColumn = Integer.parseInt(cons.readLine("Choississez un nombre de colonnes :"));
         int pourcentMine = Integer.parseInt(cons.readLine("Rentrez le pourcentage de mines (sous forme d'entier) : "));
 
-        this.initPlate(dimension, pourcentMine);
+        this.initPlate(nbRow, nbColumn, pourcentMine);
 
         int state = 0; //0:jeu continu, -1:perdu, 1:gagne
-        int x;
-        int y;
+        int row;
+        int column;
         String action;
 
         while(state == 0){
 
+            cons.format(this.plate.tostring());
             cons.format(this.plate.toString());
 
             action = cons.readLine("\nQue faire ?\n j : jouer coup\n s : sauvegarder\n");
@@ -38,21 +40,33 @@ public class Jeu {
 
                 do{
 
-                    x = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
-                }while(x > dimension && x < 1);
+                    row = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
+                }while(row > nbRow && row < 1);
     
                 do{
     
-                    y = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
-                }while(y > dimension && y < 1);
+                    column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
+                }while(column > nbColumn && column < 1);
 
-                state = this.plate.uncover(x, y) > 0 ? this.plate.isAllDiscorvered() : -1;
+                state = this.plate.uncover(row - 1, column - 1) > 0 ? this.plate.isAllDiscorvered() : -1;
             }
+            
             else{
 
-                this.plate.save();
-            }
+                do{
 
+                    row = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
+                }while(row > nbRow && row < 1);
+    
+                do{
+    
+                    column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
+                }while(column > nbColumn && column < 1);
+
+                this.plate.getCase(row - 1, column - 1).showVoisins();
+                //this.plate.save();
+            }
+            
         }
 
         cons.format(this.plate.toString());

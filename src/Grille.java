@@ -1,159 +1,148 @@
 import java.util.Random;
 import java.io.FileWriter;
 import java.io.IOException; 
+import java.util.LinkedList;
 
 public class Grille {
-    
-    private Case beginning; //case tout en haut a gauche de la grille
-    private Case end; //case tout en bas a droite
+
     private int nbMine;
-    private int dimension;
+    private int nbRow;
+    private int nbColumn;
     private int discovered;
+    private LinkedList<Case> plate;
 
     public Grille(){
 
-        this.beginning = null;
-        this.end = null;
+        this.nbColumn = 0;
         this.nbMine = 0;
-        this.dimension = 0;
+        this.nbRow = 0;
+        this.plate = new LinkedList<Case>();
         this.discovered = 0;
     }
 
-    public Grille(int dimension, float pourcentMine){
+    public Grille(int nbRow, int nbColumn, float pourcentMine){
 
-        this.dimension = dimension;
-        this.discovered = 0;
-        this.beginning = new Case(false, 0);
-        this.nbMine = (int)((float)(dimension * dimension) * pourcentMine);
+        this();
+        this.nbColumn = nbColumn;
+        this.nbRow = nbRow;
+        this.nbMine = (int)((float)(nbColumn * nbRow) * pourcentMine);
 
-        Case rowC = this.beginning;
+        Case rowC = new Case(false, 0);
+        this.plate.add(rowC);
 
-        for(int i=1; i<dimension; i++){
+        Case currentC = rowC;
 
-            Case currentC = new Case(false, 0);
+        Case newC;
 
-            rowC.addVoisins(Direction.DROITE, currentC);
+        for(int i=1; i<nbRow; i++){
 
-            for(int j=0; j<i; j++){
+            for(int j=1; j<nbColumn; j++){
 
-                //System.out.println(1);
-                Case newC = new Case(false, 0);
-                currentC.addVoisins(Direction.BAS, newC);
+                newC = new Case(false, 0);
+                currentC.addVoisins(Direction.DROITE, newC);
+                System.out.println(i + "," + j + ":" + currentC.getVoisin(Direction.DROITE).toString());
                 currentC = newC;
-                //System.out.println(newC.getVoisin(Direction.HAUT).toString());
             }
 
-            if(dimension == i+1){
+            this.plate.add(currentC);
 
-                this.end = currentC;
-            }
-            
-            for(int j=0; j<i; j++){
+            currentC = new Case(false, 0);
 
-                Case newC = new Case(false, 0);
-                currentC.addVoisins(Direction.GAUCHE, newC);
-                currentC = newC;
+            rowC.addVoisins(Direction.BAS, currentC);
 
-            }
+            rowC = currentC;
 
-            rowC = rowC.getVoisin(Direction.DROITE);
+            this.plate.add(rowC);
 
         }
-    }
 
-    public void fillMine(){
+        for(int j=1; j<nbColumn; j++){
 
-        Random rnd = new Random();
-        int nb = 0;
-        int x = 0;
-        int y = 0;
-        Case c;
-
-        while(nb < nbMine){
-
-            x = rnd.nextInt(this.dimension);
-            y = rnd.nextInt(this.dimension);
-
-            c = this.beginning;
-
-            for(int i=0; i<x; i++){
-
-                if(i < y){
-
-                    c = c.getVoisin(Direction.BAS_DROITE);
-                }
-                else{
-
-                    c = c.getVoisin(Direction.DROITE);
-                }
-            }
-
-            for(int i=0; i<y-x; i++){
-
-                c = c.getVoisin(Direction.BAS);
-            }
-
-            if(!c.isMined()){
-
-                c.setMine();
-                nb++;
-            }
+            newC = new Case(false, 0);
+            currentC.addVoisins(Direction.DROITE, newC);
+            currentC = newC;
         }
 
+        this.plate.add(currentC);
     }
 
-    public int uncover(int x, int y){
+    public Case getCase(int row, int column){
 
+        int index = row * 2;
         Case c;
 
-        if(x <= dimension/2 || y <= dimension/2){
+        if(column > nbColumn/2){
 
-            c = this.beginning;
+            index++;
 
-            for(int i=1; i<y; i++){
+            c = this.plate.get(index);
 
-                if(i < x){
+            for(int i=nbColumn; i>column+1; i--){
 
-                    c = c.getVoisin(Direction.BAS_DROITE);
-                }
-                else{
-
-                    c = c.getVoisin(Direction.DROITE);
-                }
-            }
-
-            for(int i=0; i<x-y; i++){
-
-                c = c.getVoisin(Direction.BAS);
+                c = c.getVoisin(Direction.GAUCHE);
             }
         }
         else{
 
-            c = this.end;
+            c = this.plate.get(index);
 
-            for(int i=0; i<dimension - y; i++){
+            for(int i=0; i<column; i++){
 
-                if(i < dimension - x){
-
-                    c = c.getVoisin(Direction.HAUT_GAUCHE);
-                }
-                else{
-
-                    c = c.getVoisin(Direction.GAUCHE);
-                }
-            }
-
-            for(int i=0; i<y-x; i++){
-
-                c = c.getVoisin(Direction.HAUT);
+                c = c.getVoisin(Direction.DROITE);
             }
         }
+
+        return c;
+    }
+
+    public void fillMine(){
+
+        if(this.nbMine == this.nbColumn * this.nbRow){
+
+            for(int i=0; i<nbRow; i++){
+
+                for(int j=0; j<nbColumn; j++){
+
+                    getCase(i, j).setMine();
+                }
+            }
+        }
+        else{   
+
+            Random rnd = new Random();
+            int nb = 0;
+            int row = 0;
+            int column = 0;
+            Case c;
+
+            while(nb < this.nbMine){
+
+                column = rnd.nextInt(this.nbColumn);
+                row = rnd.nextInt(this.nbRow);
+
+                c = getCase(row, column);
+
+                if(!c.isMined()){
+
+                    c.setMine();
+                    nb++;
+                }
+            }
+        }
+
+    }
+
+    public int uncover(int row, int column){
+
+        Case c = getCase(row, column);
+
         int nbUncover = c.uncover();
+
         this.discovered += nbUncover; 
         
         return nbUncover;
     }
-
+    /*
     public void save(){
 
         try{
@@ -202,7 +191,9 @@ public class Grille {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+        
     }
+    */
     /*
     public void load(){
 
@@ -249,44 +240,44 @@ public class Grille {
 
     public int isAllDiscorvered(){
 
-        return this.dimension * this.dimension - this.nbMine <= this.discovered ? 1 : 0;
+        return this.nbColumn * this.nbRow - this.nbMine <= this.discovered ? 1 : 0;
     }
 
-    public int getDimension(){
+    public int getNbColumn(){
 
-        return this.dimension;
+        return this.nbColumn;
+    }
+
+    public int getNbRow(){
+
+        return this.nbRow;
     }
 
     @Override
     public String toString(){
 
         String s = "\n";
-        int row = 1;
+        Case currentC;
 
-        Case currentRow = this.beginning;
-
-        for(int i=1; i<=dimension; i++){
+        for(int i=1; i<=nbColumn; i++){
 
             s += i + "   ";
         }
 
         s += "\n\n";
 
-        while(currentRow != null){
+        for(int i=0; i<this.nbRow; i++){
 
-            Case currentC = currentRow;
+            currentC = this.plate.get(i*2);
 
-            while(currentC != null){
-
+            for(int j=1; j<nbColumn; j++){
+                
                 s += currentC.toString() + " | ";
                 currentC = currentC.getVoisin(Direction.DROITE);
             }
 
-            s += "  " + row + "\n";
-
-            currentRow = currentRow.getVoisin(Direction.BAS);
-
-            row++;
+            s += currentC.toString() + " |   " + (i+1) + "\n";
+            //s += " |   " + i+1 + "\n";
         }
 
         return s;

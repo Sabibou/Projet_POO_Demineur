@@ -24,6 +24,17 @@ public class Case{
         return this.voisins.get(d);
     }
 
+    public void showVoisins(){
+
+        Direction[] val = Direction.values();
+
+        for(Direction d : val){
+
+            System.out.print(d + " ");
+            System.out.println(this.voisins.get(d) != null? this.getVoisin(d).tostring():this.getVoisin(d));
+        }
+    }
+
     public int getEtat(){
 
         return this.etat;
@@ -53,15 +64,15 @@ public class Case{
 
             }
 
-            if(this.getVoisin(d.next(1)) != null){
+            if(this.getVoisin(d.next()) != null){
 
-                c.createLink(d.next(1), this.getVoisin(d.next(1)).getVoisin(d), true);
-                c.createLink(d, this.getVoisin(d.next(1)).getVoisin(d.previous(1)), true);
+                c.createLink(d.next(), this.getVoisin(d.next()).getVoisin(d), true);
+                c.createLink(d, this.getVoisin(d.next()).getVoisin(d.previous()), true);
             }
 
-            if(this.getVoisin(d.previous(1)) != null){
+            if(this.getVoisin(d.previous()) != null){
 
-                c.createLink(d.next(), this.getVoisin(d.previous()).getVoisin(d), true);
+                c.createLink(d.previous(), this.getVoisin(d.previous()).getVoisin(d), true);
             }
             
         }
@@ -153,8 +164,7 @@ public class Case{
         }
         
         //return isMined()? "1" : "0";
+        //return Integer.toString(countNextMines());
     }
-
-
 
 }
