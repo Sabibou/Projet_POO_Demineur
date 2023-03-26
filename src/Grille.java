@@ -1,5 +1,8 @@
 import java.util.Random;
 import java.io.FileWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException; 
 import java.util.LinkedList;
 
@@ -40,7 +43,7 @@ public class Grille {
 
                 newC = new Case(false, 0);
                 currentC.addVoisins(Direction.DROITE, newC);
-                System.out.println(i + "," + j + ":" + currentC.getVoisin(Direction.DROITE).toString());
+
                 currentC = newC;
             }
 
@@ -142,46 +145,31 @@ public class Grille {
         
         return nbUncover;
     }
-    /*
+    
     public void save(){
 
         try{
-            FileWriter myWriter = new FileWriter("../save.txt");
+            FileWriter myWriter = new FileWriter("./save.txt");
 
-            myWriter.write(this.dimension + "\n");
+            myWriter.write(this.nbRow + "\n");
+            myWriter.write(this.nbColumn + "\n");
 
-            Case rowC = this.beginning;
+            Case rowC = this.plate.getFirst();
+            String s;
 
-            String s = rowC.getEtat() + " " + rowC.isMined() + "\n";
-
-            rowC = rowC.getVoisin(Direction.DROITE);
-
-            myWriter.write(s);
-
-            for(int i=1; i<dimension; i++){
+            for(int i=0; i<nbRow; i++){
 
                 Case currentC = rowC;
 
-                for(int j=0; j<i; j++){
+                for(int j=0; j<nbColumn; j++){
     
                     s = currentC.getEtat() + " " + currentC.isMined() + "\n";
                     myWriter.write(s);
 
-                    currentC = currentC.getVoisin(Direction.BAS);
-                }
-    
-                for(int j=0; j<i; j++){
-    
-                    s = currentC.getEtat() + " " + currentC.isMined() + "\n";
-                    myWriter.write(s);
-
-                    currentC = currentC.getVoisin(Direction.GAUCHE);
+                    currentC = currentC.getVoisin(Direction.DROITE);
                 }
 
-                s = currentC.getEtat() + " " + currentC.isMined() + "\n";
-                myWriter.write(s);
-
-                rowC = rowC.getVoisin(Direction.DROITE);
+                rowC = rowC.getVoisin(Direction.BAS);
     
             }
 
@@ -193,50 +181,38 @@ public class Grille {
         }
         
     }
-    */
-    /*
+    
+    
     public void load(){
 
-        this.dimension = dimension;
-        this.discovered = 0;
-        this.beginning = new Case(false, 0);
-        this.nbMine = (int)((float)(dimension * dimension) * pourcentMine);
-
-        Case rowC = this.beginning;
-
-        for(int i=1; i<dimension; i++){
-
-            Case currentC = new Case(false, 0);
-
-            rowC.addVoisins(Direction.DROITE, currentC);
-
-            for(int j=0; j<i; j++){
-
-                //System.out.println(1);
-                Case newC = new Case(false, 0);
-                currentC.addVoisins(Direction.BAS, newC);
-                currentC = newC;
-                //System.out.println(newC.getVoisin(Direction.HAUT).toString());
-            }
-
-            if(dimension == i+1){
-
-                this.end = currentC;
-            }
+        try {
             
-            for(int j=0; j<i; j++){
+            File fichier = new File("chemin/vers/fichier.txt");
 
-                Case newC = new Case(false, 0);
-                currentC.addVoisins(Direction.GAUCHE, newC);
-                currentC = newC;
+            
+            FileReader fileReader = new FileReader(fichier);
 
+            
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            this.nbRow = Integer.parseInt(bufferedReader.readLine());
+            this.nbColumn = Integer.parseInt(bufferedReader.readLine());
+            
+            for(int i=0; i<nbRow; i++){
+
+                
             }
 
-            rowC = rowC.getVoisin(Direction.DROITE);
+            // Fermer les ressources
+            bufferedReader.close();
+            fileReader.close();
 
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
-    */
+    
 
     public int isAllDiscorvered(){
 

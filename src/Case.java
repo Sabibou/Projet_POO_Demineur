@@ -24,17 +24,6 @@ public class Case{
         return this.voisins.get(d);
     }
 
-    public void showVoisins(){
-
-        Direction[] val = Direction.values();
-
-        for(Direction d : val){
-
-            System.out.print(d + " ");
-            System.out.println(this.voisins.get(d) != null? this.getVoisin(d).tostring():this.getVoisin(d));
-        }
-    }
-
     public int getEtat(){
 
         return this.etat;

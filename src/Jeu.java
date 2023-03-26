@@ -31,7 +31,6 @@ public class Jeu {
 
         while(state == 0){
 
-            cons.format(this.plate.tostring());
             cons.format(this.plate.toString());
 
             action = cons.readLine("\nQue faire ?\n j : jouer coup\n s : sauvegarder\n");
@@ -53,18 +52,7 @@ public class Jeu {
             
             else{
 
-                do{
-
-                    row = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
-                }while(row > nbRow && row < 1);
-    
-                do{
-    
-                    column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
-                }while(column > nbColumn && column < 1);
-
-                this.plate.getCase(row - 1, column - 1).showVoisins();
-                //this.plate.save();
+                this.plate.save();
             }
             
         }
