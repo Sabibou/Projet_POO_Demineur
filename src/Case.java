@@ -143,19 +143,19 @@ public class Case{
         
         if(this.mine == true && etat == 1){
 
-            return "M";
+            return "\033[41m M \033[0m";
         }
         if(this.etat == -1){
 
-            return "X";
+            return "\033[43m X \033[0m";
         }
         else if(this.etat == 0){
 
-            return "?";
+            return "\033[44m ? \033[0m";
         }
         else{
 
-            return Integer.toString(countNextMines());
+            return String.format("\033[42m %s \033[0m", Integer.toString(countNextMines()));
         }
         
         //return isMined()? "1" : "0";
