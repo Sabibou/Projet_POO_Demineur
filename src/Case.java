@@ -62,6 +62,7 @@ public class Case{
             if(this.getVoisin(d.previous()) != null){
 
                 c.createLink(d.previous(), this.getVoisin(d.previous()).getVoisin(d), true);
+                c.createLink(d, this.getVoisin(d.previous()).getVoisin(d.next()), true);
             }
             
         }
@@ -130,6 +131,11 @@ public class Case{
 
             return 1;
         }
+    }
+
+    public void setFlag(){
+
+        this.etat = -1;
     }
 
     @Override

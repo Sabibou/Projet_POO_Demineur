@@ -1,8 +1,5 @@
 import java.util.Random;
 import java.io.FileWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
 import java.io.IOException; 
 import java.util.LinkedList;
 
@@ -21,6 +18,13 @@ public class Grille {
         this.nbRow = 0;
         this.plate = new LinkedList<Case>();
         this.discovered = 0;
+    }
+
+    public Grille(int nbRow, int nbColumn){
+
+        this();
+        this.nbColumn = nbColumn;
+        this.nbRow = nbRow;
     }
 
     public Grille(int nbRow, int nbColumn, float pourcentMine){
@@ -69,7 +73,7 @@ public class Grille {
         this.plate.add(currentC);
     }
 
-    public Case getCase(int row, int column){
+    public Case getCase(int row, int column){ //ca commence à 0 
 
         int index = row * 2;
         Case c;
@@ -145,6 +149,41 @@ public class Grille {
         
         return nbUncover;
     }
+
+    public void addRow(Case[] array){
+
+        if(array.length == this.nbColumn){
+            
+            Case currentC;
+
+            if(!this.plate.isEmpty()){
+
+                currentC = this.plate.get(this.plate.size() - 2);
+
+                currentC.addVoisins(Direction.BAS, array[0]);
+
+                System.out.println("isempty");
+
+            }
+
+            currentC = array[0];
+
+            this.plate.add(currentC);
+
+            for(int i=1; i<this.nbColumn; i++){
+
+                currentC.addVoisins(Direction.DROITE, array[i]);
+                currentC = array[i];
+            }
+
+            this.plate.add(currentC);
+
+            if(this.plate.size()/2 > this.nbRow){
+
+                this.nbRow++;
+            }
+        }
+    }
     
     public void save(){
 
@@ -182,37 +221,6 @@ public class Grille {
         
     }
     
-    
-    public void load(){
-
-        try {
-            
-            File fichier = new File("chemin/vers/fichier.txt");
-
-            
-            FileReader fileReader = new FileReader(fichier);
-
-            
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            this.nbRow = Integer.parseInt(bufferedReader.readLine());
-            this.nbColumn = Integer.parseInt(bufferedReader.readLine());
-            
-            for(int i=0; i<nbRow; i++){
-
-                
-            }
-
-            // Fermer les ressources
-            bufferedReader.close();
-            fileReader.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-    
 
     public int isAllDiscorvered(){
 
@@ -227,6 +235,21 @@ public class Grille {
     public int getNbRow(){
 
         return this.nbRow;
+    }
+
+    public void setDiscovered(int discovered){
+
+        this.discovered = discovered;
+    }
+
+    public  void setNbMines(int nbMine){
+
+        this.nbMine = nbMine;
+    }
+
+    public void setCaseFlag(int row, int column){
+
+        this.getCase(row, column).setFlag();
     }
 
     @Override
