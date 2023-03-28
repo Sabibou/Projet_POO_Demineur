@@ -220,6 +220,28 @@ public class Grille {
         }
         
     }
+
+
+    public Case[][] toArray(){
+
+        Case[][] array = new Case[this.nbRow][this.nbColumn];
+
+        Case c;
+
+        for(int i=0; i<nbRow; i++){
+
+            c = this.plate.get(i*2);
+
+            for(int j=0; j<nbColumn; j++){
+
+                array[i][j] = c;
+                c = c.getVoisin(Direction.DROITE);
+
+            }
+        }
+
+        return array;
+    }
     
 
     public int isAllDiscorvered(){
@@ -237,6 +259,11 @@ public class Grille {
         return this.nbRow;
     }
 
+    public int getNbMines(){
+
+        return this.nbMine;
+    }
+
     public void setDiscovered(int discovered){
 
         this.discovered = discovered;
@@ -250,6 +277,11 @@ public class Grille {
     public void setCaseFlag(int row, int column){
 
         this.getCase(row, column).setFlag();
+    }
+
+    public void removeCaseFlag(int row, int column){
+
+        this.getCase(row, column).removeFlag();
     }
 
     @Override

@@ -134,8 +134,24 @@ public class Case{
     }
 
     public void setFlag(){
+        
+        if(this.etat == 0){
 
-        this.etat = -1;
+            this.etat = -1;
+        }
+    }
+
+    public void removeFlag(){
+
+        if(this.etat == -1){
+
+            this.etat = 0;
+        }
+    }
+
+    public boolean isFlaged(){
+
+        return this.etat == -1;
     }
 
     @Override
@@ -156,6 +172,29 @@ public class Case{
         else{
 
             return String.format("\033[42m %s \033[0m", Integer.toString(countNextMines()));
+        }
+        
+        //return isMined()? "1" : "0";
+        //return Integer.toString(countNextMines());
+    }
+
+    public String toString2(){  //pour le jeu graphique
+        
+        if(this.mine == true && etat == 1){
+
+            return "M";
+        }
+        if(this.etat == -1){
+
+            return "X";
+        }
+        else if(this.etat == 0){
+
+            return "";
+        }
+        else{
+
+            return String.format(Integer.toString(countNextMines()));
         }
         
         //return isMined()? "1" : "0";
