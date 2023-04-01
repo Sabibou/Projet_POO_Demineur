@@ -21,16 +21,16 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     JMenuItem newGameButton;
     JLabel mineLabel;
     JMenuBar mb;
+    JPanel p; 
 
     public JeuGraphique(int nbRow, int nbColumn, int pourcentMine){
 
         this.plate = new Grille(nbRow, nbColumn, (float)pourcentMine/100);
         this.plate.fillMine();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(2000,2000);
-        layout = new GridLayout(nbRow, nbColumn);
-        this.setLayout(layout);
-        layout.minimumLayoutSize(this);
+        this.setPreferredSize(new Dimension(1500, 1500));;
+        
+        p = new JPanel();
 
         newGameButton = new JMenuItem("new game");
         mineLabel = new JLabel("mines: " + this.plate.getNbMines());
@@ -40,23 +40,22 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         mb.add(mineLabel);
         this.setJMenuBar(mb);
 
-        buttons = new JButton[nbRow][nbColumn];
-        clickable = new boolean[nbRow][nbColumn];
-
         setup();
 
-        for(int row=0; row<this.plate.getNbRow(); row++){
-
-            for(int column=0; column<this.plate.getNbColumn(); column++){
-
-                this.add(buttons[row][column]);
-            }
-        }
-        this.pack();
         this.setVisible(true);
     }
 
     private void setup(){
+
+        int nbRow = this.plate.getNbRow();
+        int nbColumn = this.plate.getNbColumn();
+
+        layout = new GridLayout(nbRow, nbColumn);
+        p.setLayout(layout);
+        layout.minimumLayoutSize(p);
+
+        buttons = new JButton[nbRow][nbColumn];
+        clickable = new boolean[nbRow][nbColumn];
 
         for(int row=0; row<this.plate.getNbRow(); row++){
 
@@ -69,6 +68,28 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
                 buttons[row][column].addMouseListener(this);
             }
         }
+
+        for(int row=0; row<this.plate.getNbRow(); row++){
+
+            for(int column=0; column<this.plate.getNbColumn(); column++){
+
+                p.add(buttons[row][column]);
+            }
+        }
+
+        this.add(p);
+        this.pack();
+    }
+
+    public void setup(int nbRow, int nbColumn, int pourcentMine){
+
+        this.remove(p);
+        p = new JPanel();
+
+        this.plate = new Grille(nbRow, nbColumn, (float)pourcentMine/100);
+        this.plate.fillMine();
+
+        setup();
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -78,7 +99,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     }
  
     public void mousePressed(MouseEvent e) {
-   
+
         for (int row = 0; row < this.plate.getNbRow(); row++) {
 
             for (int column = 0; column < this.plate.getNbColumn(); column++) {
@@ -119,15 +140,22 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
     public void actionPerformed(ActionEvent e) {
 
-        for (int row = 0; row < this.plate.getNbRow(); row++) {
+        if(e.getSource() == newGameButton){
 
-            for (int column = 0; column < this.plate.getNbColumn(); column++) {
+            this.setup(20, 20, 20);
+        }
+        else{
 
-                if(this.plate.getCase(row, column).isDiscovered() || this.plate.getCase(row, column).isFlaged()){
+            for (int row = 0; row < this.plate.getNbRow(); row++) {
 
-                    buttons[row][column].setText(this.plate.getCase(row, column).toString2());
+                for (int column = 0; column < this.plate.getNbColumn(); column++) {
+    
+                    if(this.plate.getCase(row, column).isDiscovered() || this.plate.getCase(row, column).isFlaged()){
+    
+                        buttons[row][column].setText(this.plate.getCase(row, column).toString2());
+                    }
+                    
                 }
-                
             }
         }
     }
