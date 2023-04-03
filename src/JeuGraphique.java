@@ -6,11 +6,16 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.*;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.color.*;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class JeuGraphique extends JFrame implements ActionListener, MouseInputListener{
     
@@ -22,23 +27,20 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     JLabel mineLabel;
     JMenuBar mb;
     JPanel p; 
+    Font f = new Font("SERIF", 1, 40);
+    JTextField inputNbRow;
+    JTextField inputNbColumn;
+    JTextField pourcentNbMine;
+    int state;
 
     public JeuGraphique(int nbRow, int nbColumn, int pourcentMine){
 
         this.plate = new Grille(nbRow, nbColumn, (float)pourcentMine/100);
         this.plate.fillMine();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(1500, 1500));;
+        this.setPreferredSize(new Dimension(2000, 2000));;
         
         p = new JPanel();
-
-        newGameButton = new JMenuItem("new game");
-        mineLabel = new JLabel("mines: " + this.plate.getNbMines());
-        mb = new JMenuBar();
-        newGameButton.addActionListener(this);
-        mb.add(newGameButton);
-        mb.add(mineLabel);
-        this.setJMenuBar(mb);
 
         setup();
 
@@ -49,6 +51,8 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
         int nbRow = this.plate.getNbRow();
         int nbColumn = this.plate.getNbColumn();
+
+        state = 0;
 
         layout = new GridLayout(nbRow, nbColumn);
         p.setLayout(layout);
@@ -77,6 +81,24 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
             }
         }
 
+        newGameButton = new JMenuItem("new game");
+        mineLabel = new JLabel("mines: " + this.plate.getNbMines());
+        inputNbRow = new JTextField("Nb lignes");
+        inputNbColumn = new JTextField("Nb colonnes");
+        pourcentNbMine = new JTextField("Pourcentage mines");
+
+        newGameButton.setFont(f);
+        mineLabel.setFont(f);
+
+        mb = new JMenuBar();
+        newGameButton.addActionListener(this);
+        mb.add(newGameButton);
+        mb.add(inputNbRow);
+        mb.add(inputNbColumn);
+        mb.add(pourcentNbMine);
+        mb.add(mineLabel);
+        this.setJMenuBar(mb);
+
         this.add(p);
         this.pack();
     }
@@ -86,7 +108,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         this.remove(p);
         p = new JPanel();
 
-        this.plate = new Grille(nbRow, nbColumn, (float)pourcentMine/100);
+        this.plate = new Grille(Integer.parseInt(inputNbRow.getText()), Integer.parseInt(inputNbColumn.getText()), (float)Integer.parseInt(pourcentNbMine.getText())/100);
         this.plate.fillMine();
 
         setup();
@@ -109,7 +131,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
                     if(e.getButton() == MouseEvent.BUTTON1 && clickable[row][column]){
 
                         clickable[row][column] = !clickable[row][column]; //le bouton ne peut être plus cliquable
-                        this.plate.uncover(row, column);
+                        this.state = this.plate.play(row, column);
                     }
                     
 
@@ -119,12 +141,14 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
                             this.plate.setCaseFlag(row, column);
                             buttons[row][column].setText(this.plate.getCase(row, column).toString2());
+                            buttons[row][column].setFont(f);
                         }
 
                         else{
 
                             this.plate.removeCaseFlag(row, column);
                             buttons[row][column].setText(this.plate.getCase(row, column).toString2());
+                            buttons[row][column].setFont(f);
                         }
                     }
                 }
@@ -150,13 +174,54 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
                 for (int column = 0; column < this.plate.getNbColumn(); column++) {
     
-                    if(this.plate.getCase(row, column).isDiscovered() || this.plate.getCase(row, column).isFlaged()){
-    
-                        buttons[row][column].setText(this.plate.getCase(row, column).toString2());
+                    if(this.plate.getCase(row, column).isDiscovered()){
+                        
+                        String s = this.plate.getCase(row, column).toString2();
+                        buttons[row][column].setText(s);
+                        buttons[row][column].setFont(f);
+                        
+                        if(s.equals("M") || s.equals("0")){
+
+                            buttons[row][column].setBackground(new Color(255, 255, 255));
+                        }
+                        else if(Integer.parseInt(s) < 3){
+
+                            buttons[row][column].setBackground(Color.GREEN);
+                        }
+                        else if(Integer.parseInt(s) < 5){
+
+                            buttons[row][column].setBackground(Color.ORANGE);
+                        }
+                        else{
+
+                            buttons[row][column].setBackground(Color.RED);
+                        }
+                        
                     }
                     
                 }
             }
+        }
+
+        if(state == 1){
+
+            JLabel text = new JLabel("Vous avez gagné");
+            text.setFont(f);
+            text.setHorizontalAlignment(SwingConstants.CENTER);
+
+            this.remove(p);
+
+            this.add(text, BorderLayout.CENTER);
+        }
+        else if(state == -1){
+
+            JLabel text = new JLabel("Vous avez perdu");
+            text.setFont(f);
+            text.setHorizontalAlignment(SwingConstants.CENTER);
+
+            this.remove(p);
+
+            this.add(text, BorderLayout.CENTER);
         }
     }
 

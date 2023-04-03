@@ -100,7 +100,7 @@ public class Jeu {
 
         }
 
-        int state = 0; //0:jeu continu, -1:perdu, 1:gagne
+        int state = 0;  //0: jeu continu  -1:perdu   1:gagne 
         int row;
         int column;
         String action;
@@ -123,7 +123,7 @@ public class Jeu {
                     column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
                 }while(column > this.plate.getNbColumn() && column < 1);
 
-                state = this.plate.uncover(row - 1, column - 1) > 0 ? this.plate.isAllDiscorvered() : -1;
+                state = this.plate.play(row -1, column - 1);
             }
             else if(action.equals("m") || action.equals("M")){
 

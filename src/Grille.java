@@ -139,7 +139,7 @@ public class Grille {
 
     }
 
-    public int uncover(int row, int column){
+    private int uncover(int row, int column){
 
         Case c = getCase(row, column);
 
@@ -282,6 +282,11 @@ public class Grille {
     public void removeCaseFlag(int row, int column){
 
         this.getCase(row, column).removeFlag();
+    }
+
+    public int play(int nbRow, int nbColumn){
+
+        return this.uncover(nbRow, nbColumn) > 0 ? this.isAllDiscorvered() : -1;
     }
 
     @Override
