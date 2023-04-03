@@ -173,9 +173,6 @@ public class Case{
 
             return String.format("\033[42m %s \033[0m", Integer.toString(countNextMines()));
         }
-        
-        //return isMined()? "1" : "0";
-        //return Integer.toString(countNextMines());
     }
 
     public String toString2(){  //pour le jeu graphique
@@ -196,9 +193,6 @@ public class Case{
 
             return String.format(Integer.toString(countNextMines()));
         }
-        
-        //return isMined()? "1" : "0";
-        //return Integer.toString(countNextMines());
     }
 
 }

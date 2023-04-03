@@ -16,6 +16,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException; 
 
 public class JeuGraphique extends JFrame implements ActionListener, MouseInputListener{
     
@@ -24,10 +28,14 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     private JButton[][] buttons;
     private boolean[][] clickable;
     JMenuItem newGameButton;
+    JMenuItem save;
+    JMenuItem load;
     JLabel mineLabel;
     JMenuBar mb;
+    JMenu menu;
     JPanel p; 
     Font f = new Font("SERIF", 1, 40);
+    Font f1 = new Font("SERIF", 1, 30);
     JTextField inputNbRow;
     JTextField inputNbColumn;
     JTextField pourcentNbMine;
@@ -81,18 +89,32 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
             }
         }
 
+        menu = new JMenu("Menu");
         newGameButton = new JMenuItem("new game");
+        save = new JMenuItem("Save");
+        load = new JMenuItem("Load");
         mineLabel = new JLabel("mines: " + this.plate.getNbMines());
-        inputNbRow = new JTextField("Nb lignes");
-        inputNbColumn = new JTextField("Nb colonnes");
-        pourcentNbMine = new JTextField("Pourcentage mines");
+        inputNbRow = new JTextField("Nb lignes : 1-20");
+        inputNbColumn = new JTextField("Nb colonnes : 1-20");
+        pourcentNbMine = new JTextField("Pourcentage mines : 0-100");
 
+        menu.setFont(f);
         newGameButton.setFont(f);
+        save.setFont(f);
+        load.setFont(f);
         mineLabel.setFont(f);
+        inputNbRow.setFont(f1);
+        inputNbColumn.setFont(f1);
+        pourcentNbMine.setFont(f1);
 
         mb = new JMenuBar();
         newGameButton.addActionListener(this);
-        mb.add(newGameButton);
+        save.addActionListener(this);
+        load.addActionListener(this);
+        menu.add(newGameButton);
+        menu.add(save);
+        menu.add(load);
+        mb.add(menu);
         mb.add(inputNbRow);
         mb.add(inputNbColumn);
         mb.add(pourcentNbMine);
@@ -103,15 +125,93 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         this.pack();
     }
 
-    public void setup(int nbRow, int nbColumn, int pourcentMine){
+    private boolean verifyInput(){
 
-        this.remove(p);
-        p = new JPanel();
+        String nbRow = this.inputNbRow.getText();
+        String nbColumn = this.inputNbColumn.getText();
+        String nbMines = this.pourcentNbMine.getText();
 
-        this.plate = new Grille(Integer.parseInt(inputNbRow.getText()), Integer.parseInt(inputNbColumn.getText()), (float)Integer.parseInt(pourcentNbMine.getText())/100);
-        this.plate.fillMine();
+        String regex1 = "^(1?[0-9]|20)$";
+        String regex2 = "^(100|[1-9][0-9]?|0)$";
 
-        setup();
+        return nbColumn.matches(regex1) && nbRow.matches(regex1) && nbMines.matches(regex2);
+    }
+
+    private void setup(int nbRow, int nbColumn, int pourcentMine){
+
+        if(verifyInput()){
+
+            this.remove(p);
+            p = new JPanel();
+            
+
+            this.plate = new Grille(Integer.parseInt(inputNbRow.getText()), Integer.parseInt(inputNbColumn.getText()), (float)Integer.parseInt(pourcentNbMine.getText())/100);
+            this.plate.fillMine();
+
+            setup();
+        }
+    }
+
+    private void load(){
+
+        try {
+            
+            File fichier = new File("./save.txt");
+
+            
+            FileReader fileReader = new FileReader(fichier);
+
+            
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            int nbRow = Integer.parseInt(bufferedReader.readLine());
+            int nbColumn = Integer.parseInt(bufferedReader.readLine());
+            
+            this.plate = new Grille(nbRow, nbColumn);
+
+            int discovered = 0;
+            int nbMines = 0;
+            Case[] row = new Case[nbColumn];
+            String line;
+            String[] words;
+
+            for(int i=0; i<nbRow; i++){
+
+                for(int j=0; j<nbColumn; j++){
+
+                    line =  bufferedReader.readLine();
+                    words = line.split(" ");
+                    row[j] = new Case(Boolean.parseBoolean(words[1]), Integer.parseInt(words[0]));
+
+                    if(row[i].isDiscovered()){
+
+                        discovered++;
+                    }
+
+                    if(row[i].isMined()){
+
+                        nbMines++;
+                    }
+                }
+
+                this.plate.addRow(row);
+            }
+
+            this.plate.setDiscovered(discovered);
+            this.plate.setNbMines(nbMines);
+
+            // Fermer les ressources
+            bufferedReader.close();
+            fileReader.close();
+
+            this.remove(p);
+            p = new JPanel();
+
+            setup();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -167,6 +267,14 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         if(e.getSource() == newGameButton){
 
             this.setup(20, 20, 20);
+        }
+        else if(e.getSource() == save){
+
+            this.plate.save();
+        }
+        else if(e.getSource() == load){
+
+            this.load();
         }
         else{
 

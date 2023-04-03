@@ -161,9 +161,6 @@ public class Grille {
                 currentC = this.plate.get(this.plate.size() - 2);
 
                 currentC.addVoisins(Direction.BAS, array[0]);
-
-                System.out.println("isempty");
-
             }
 
             currentC = array[0];
@@ -297,7 +294,7 @@ public class Grille {
 
         for(int i=1; i<=nbColumn; i++){
 
-            s += i + "   ";
+            s += " " + i + "    ";
         }
 
         s += "\n\n";

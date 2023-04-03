@@ -113,15 +113,18 @@ public class Jeu {
 
             if(action.equals("j") || action.equals("J")){
 
-                do{
+                row = this.plate.getNbRow() + 1;
+                column = this.plate.getNbColumn() + 1;
+
+                while(row > this.plate.getNbRow() || row < 1){
 
                     row = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
-                }while(row > this.plate.getNbRow() && row < 1);
+                }
     
-                do{
+                while(column > this.plate.getNbColumn() || column < 1){
     
                     column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
-                }while(column > this.plate.getNbColumn() && column < 1);
+                }
 
                 state = this.plate.play(row -1, column - 1);
             }
