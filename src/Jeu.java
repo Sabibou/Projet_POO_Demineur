@@ -154,11 +154,18 @@ public class Jeu {
 
         if(state == 1){
 
-            cons.format("Vous avez gagné!\n");
+            cons.format("\nVous avez gagné!\n\n");
         }
-        else{
+        else if(state == -1){
 
-            cons.format("Vous avez perdu!\n");
+            for(int i=0;i<this.plate.getNbRow();i++){
+                for(int j=0;j<this.plate.getNbColumn();j++){
+                    this.plate.play(i,j);
+                }
+            }
+            cons.format(this.plate.toString());
+            cons.format("\nVous avez perdu!\n\n");
+
         }
     }
     
