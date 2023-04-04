@@ -40,6 +40,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     JTextField inputNbColumn;
     JTextField pourcentNbMine;
     int state;
+    JLabel text;
 
     public JeuGraphique(int nbRow, int nbColumn, int pourcentMine){
 
@@ -262,6 +263,33 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     public void mouseClicked(MouseEvent e) {
     }
 
+    private void printButton(int row, int column){
+
+        if(this.plate.getCase(row, column).isDiscovered()){
+                        
+            String s = this.plate.getCase(row, column).toString2();
+            buttons[row][column].setText(s);
+            buttons[row][column].setFont(f);
+            
+            if(s.equals("M") || s.equals("0")){
+
+                buttons[row][column].setBackground(new Color(255, 255, 255));
+            }
+            else if(Integer.parseInt(s) < 3){
+
+                buttons[row][column].setBackground(Color.GREEN);
+            }
+            else if(Integer.parseInt(s) < 5){
+
+                buttons[row][column].setBackground(Color.ORANGE);
+            }
+            else{
+
+                buttons[row][column].setBackground(Color.RED);
+            }
+            
+        }
+    }
     public void actionPerformed(ActionEvent e) {
 
         if(e.getSource() == newGameButton){
@@ -282,30 +310,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
                 for (int column = 0; column < this.plate.getNbColumn(); column++) {
     
-                    if(this.plate.getCase(row, column).isDiscovered()){
-                        
-                        String s = this.plate.getCase(row, column).toString2();
-                        buttons[row][column].setText(s);
-                        buttons[row][column].setFont(f);
-                        
-                        if(s.equals("M") || s.equals("0")){
-
-                            buttons[row][column].setBackground(new Color(255, 255, 255));
-                        }
-                        else if(Integer.parseInt(s) < 3){
-
-                            buttons[row][column].setBackground(Color.GREEN);
-                        }
-                        else if(Integer.parseInt(s) < 5){
-
-                            buttons[row][column].setBackground(Color.ORANGE);
-                        }
-                        else{
-
-                            buttons[row][column].setBackground(Color.RED);
-                        }
-                        
-                    }
+                    this.printButton(row, column);
                     
                 }
             }
@@ -313,7 +318,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
         if(state == 1){
 
-            JLabel text = new JLabel("Vous avez gagné");
+            text = new JLabel("Vous avez gagné");
             text.setFont(f);
             text.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -323,10 +328,18 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         }
         else if(state == -1){
 
-            JLabel text = new JLabel("Vous avez perdu");
+            text = new JLabel("Vous avez perdu");
             text.setFont(f);
             text.setHorizontalAlignment(SwingConstants.CENTER);
 
+            for (int row = 0; row < this.plate.getNbRow(); row++) {
+
+                for (int column = 0; column < this.plate.getNbColumn(); column++) {
+
+                    this.plate.play(row, column);
+                    this.printButton(row, column);
+                }
+            }
             this.remove(p);
 
             this.add(text, BorderLayout.CENTER);
