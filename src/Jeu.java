@@ -78,13 +78,29 @@ public class Jeu {
 
     }
 
+    public static void clearConsole() {
+        try{
+
+            if(System.getProperty("os.name").contains("Windows")){
+
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+
+            else{
+
+                System.out.print("\033\143");
+            }
+        } 
+        catch (IOException | InterruptedException ex){}
+    }
+
     private void play(){
 
-        cons.format("Bienvenue au jeu du demineur\n");
+        cons.format("Bienvenue au jeu du demineur%n");
 
         String choice;
 
-        choice = cons.readLine("N - Nouvelle partie\nC - Charger une partie\n");
+        choice = cons.readLine("N - Nouvelle partie%nC - Charger une partie%nAutre - Quitter%n");
 
         if(choice.equals("n") || choice.equals("N")){
 
@@ -99,6 +115,10 @@ public class Jeu {
             this.load();
 
         }
+        else{
+
+            System.exit(0);
+        }
 
         int state = 0;  //0: jeu continu  -1:perdu   1:gagne 
         int row;
@@ -107,9 +127,11 @@ public class Jeu {
 
         while(state == 0){
 
+            this.clearConsole();
+
             cons.format(this.plate.toString());
 
-            action = cons.readLine("\nQue faire ?\n j : jouer coup\n m : marquer une case\n s : sauvegarder\n");
+            action = cons.readLine("%nQue faire ?%n j : jouer coup%n m : marquer une case%n s : sauvegarder%n q : quitter%n");
 
             if(action.equals("j") || action.equals("J")){
 
@@ -118,12 +140,12 @@ public class Jeu {
 
                 while(row > this.plate.getNbRow() || row < 1){
 
-                    row = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
+                    row = Integer.parseInt(cons.readLine("%nRentrez la ligne :"));
                 }
     
                 while(column > this.plate.getNbColumn() || column < 1){
     
-                    column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
+                    column = Integer.parseInt(cons.readLine("%nRentrez la colonne :"));
                 }
 
                 state = this.plate.play(row -1, column - 1);
@@ -132,20 +154,25 @@ public class Jeu {
 
                 do{
 
-                    row = Integer.parseInt(cons.readLine("\nRentrez la ligne :"));
+                    row = Integer.parseInt(cons.readLine("%nRentrez la ligne :"));
                 }while(row > this.plate.getNbRow() && row < 1);
     
                 do{
     
-                    column = Integer.parseInt(cons.readLine("\nRentrez la colonne :"));
+                    column = Integer.parseInt(cons.readLine("%nRentrez la colonne :"));
                 }while(column > this.plate.getNbColumn() && column < 1);
 
                 this.plate.setCaseFlag(row -1, column - 1);
             }
             
-            else{
+            else if(action.equals("s") || action.equals("S")){
 
                 this.plate.save();
+            }
+
+            else if(action.equals("q") || action.equals("Q")){
+
+                System.exit(0);
             }
             
         }
@@ -154,7 +181,7 @@ public class Jeu {
 
         if(state == 1){
 
-            cons.format("\nVous avez gagné!\n\n");
+            cons.format("%nVous avez gagné!%n%n");
         }
         else if(state == -1){
 
@@ -164,7 +191,7 @@ public class Jeu {
                 }
             }
             cons.format(this.plate.toString());
-            cons.format("\nVous avez perdu!\n\n");
+            cons.format("%nVous avez perdu!%n%n");
 
         }
     }

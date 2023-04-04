@@ -187,8 +187,8 @@ public class Grille {
         try{
             FileWriter myWriter = new FileWriter("./save.txt");
 
-            myWriter.write(this.nbRow + "\n");
-            myWriter.write(this.nbColumn + "\n");
+            myWriter.write(this.nbRow + "%n");
+            myWriter.write(this.nbColumn + "%n");
 
             Case rowC = this.plate.getFirst();
             String s;
@@ -199,7 +199,7 @@ public class Grille {
 
                 for(int j=0; j<nbColumn; j++){
     
-                    s = currentC.getEtat() + " " + currentC.isMined() + "\n";
+                    s = currentC.getEtat() + " " + currentC.isMined() + "%n";
                     myWriter.write(s);
 
                     currentC = currentC.getVoisin(Direction.DROITE);
@@ -210,7 +210,7 @@ public class Grille {
             }
 
             myWriter.close();
-            System.out.println("Successfully wrote to the file.\n");
+            System.out.println("Successfully wrote to the file.%n");
         }catch (IOException e){
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -289,7 +289,7 @@ public class Grille {
     @Override
     public String toString(){
 
-        String s = "\n";
+        String s = "%n";
         Case currentC;
 
         for(int i=1; i<=nbColumn; i++){
@@ -297,7 +297,7 @@ public class Grille {
             s += " " + i + "    ";
         }
 
-        s += "\n\n";
+        s += "%n%n";
 
         for(int i=0; i<this.nbRow; i++){
 
@@ -309,8 +309,8 @@ public class Grille {
                 currentC = currentC.getVoisin(Direction.DROITE);
             }
 
-            s += currentC.toString() + " |   " + (i+1) + "\n";
-            //s += " |   " + i+1 + "\n";
+            s += currentC.toString() + " |   " + (i+1) + "%n";
+            //s += " |   " + i+1 + "%n";
         }
 
         return s;
