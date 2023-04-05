@@ -270,22 +270,34 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
             String s = this.plate.getCase(row, column).toString2();
             buttons[row][column].setText(s);
             buttons[row][column].setFont(f);
+            buttons[row][column].setBackground(Color.white);
             
-            if(s.equals("M") || s.equals("0")){
+            if(s.equals("0")){
 
-                buttons[row][column].setBackground(new Color(255, 255, 255));
+                buttons[row][column].setText("");
+            }
+            else if(s.equals("M")){
+
+                if(this.state == 1){
+
+                    buttons[row][column].setText("D");
+                }
+                else{
+
+                    buttons[row][column].setBackground(Color.red);
+                }
             }
             else if(Integer.parseInt(s) < 3){
 
                 buttons[row][column].setBackground(Color.GREEN);
             }
-            else if(Integer.parseInt(s) < 5){
+            else if(Integer.parseInt(s) < 6){
 
                 buttons[row][column].setBackground(Color.ORANGE);
             }
             else{
 
-                buttons[row][column].setBackground(Color.RED);
+                buttons[row][column].setBackground(Color.red);
             }
             
         }
@@ -316,21 +328,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
             }
         }
 
-        if(state == 1){
-
-            text = new JLabel("Vous avez gagné");
-            text.setFont(f);
-            text.setHorizontalAlignment(SwingConstants.CENTER);
-
-            this.remove(p);
-
-            this.add(text, BorderLayout.CENTER);
-        }
-        else if(state == -1){
-
-            text = new JLabel("Vous avez perdu");
-            text.setFont(f);
-            text.setHorizontalAlignment(SwingConstants.CENTER);
+        if(state != 0){
 
             for (int row = 0; row < this.plate.getNbRow(); row++) {
 
@@ -340,9 +338,6 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
                     this.printButton(row, column);
                 }
             }
-            this.remove(p);
-
-            this.add(text, BorderLayout.CENTER);
         }
     }
 
