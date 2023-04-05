@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException; 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 
 public class JeuGraphique extends JFrame implements ActionListener, MouseInputListener{
     
@@ -41,6 +44,8 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     JTextField pourcentNbMine;
     int state;
     JLabel text;
+    Icon mine = new ImageIcon("./img/mine.png");
+    Icon flag = new ImageIcon("./img/flag.png");
 
     public JeuGraphique(int nbRow, int nbColumn, int pourcentMine){
 
@@ -48,7 +53,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         this.plate.fillMine();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(2000, 2000));;
-        
+
         p = new JPanel();
 
         setup();
@@ -138,9 +143,9 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         return nbColumn.matches(regex1) && nbRow.matches(regex1) && nbMines.matches(regex2);
     }
 
-    private void setup(int nbRow, int nbColumn, int pourcentMine){
+    private void setup(boolean verify){
 
-        if(verifyInput()){
+        if(verify){
 
             this.remove(p);
             p = new JPanel();
@@ -215,6 +220,8 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         }
     }
 
+    
+
     public void mouseEntered(MouseEvent e) {
     }
  
@@ -231,6 +238,11 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
                     if(e.getButton() == MouseEvent.BUTTON1 && clickable[row][column]){
 
+                        if(this.plate.getCase(row, column).isFlaged()){
+
+                            buttons[row][column].setIcon(null);
+                        }
+
                         clickable[row][column] = !clickable[row][column]; //le bouton ne peut être plus cliquable
                         this.state = this.plate.play(row, column);
                     }
@@ -241,15 +253,13 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
                         if(!this.plate.getCase(row, column).isFlaged()){
 
                             this.plate.setCaseFlag(row, column);
-                            buttons[row][column].setText(this.plate.getCase(row, column).toString2());
-                            buttons[row][column].setFont(f);
+                            buttons[row][column].setIcon(flag);
                         }
 
                         else{
 
                             this.plate.removeCaseFlag(row, column);
-                            buttons[row][column].setText(this.plate.getCase(row, column).toString2());
-                            buttons[row][column].setFont(f);
+                            buttons[row][column].setIcon(null);
                         }
                     }
                 }
@@ -278,11 +288,10 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
             }
             else if(s.equals("M")){
 
-                if(this.state == 1){
+                buttons[row][column].setIcon(mine);
+                buttons[row][column].setText("");
 
-                    buttons[row][column].setText("D");
-                }
-                else{
+                if(this.state == -1){
 
                     buttons[row][column].setBackground(Color.red);
                 }
@@ -306,9 +315,9 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
 
         if(e.getSource() == newGameButton){
 
-            this.setup(20, 20, 20);
+            this.setup(this.verifyInput());
         }
-        else if(e.getSource() == save){
+        else if(e.getSource() == save && this.state == 0){
 
             this.plate.save();
         }
