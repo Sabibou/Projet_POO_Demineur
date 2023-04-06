@@ -9,36 +9,36 @@ public enum Direction{
         return array[(ordinal() + 4) % 8];
     }
 
-    private int mod(int n, int m){
+    private int mod(int n){
 
-        return (((n % m) + m) % m);
+        return (((n % 8) + 8) % 8);
     }
 
     public Direction next(){
 
         Direction[] array = values();
 
-        return array[mod((ordinal() + 1), 8)];
+        return array[mod((ordinal() + 1))];
     }
 
     public Direction next(int nb){
 
         Direction[] array = values();
 
-        return array[mod((ordinal() + nb), 8)];
+        return array[mod((ordinal() + nb))];
     }
 
     public Direction previous(){
 
         Direction[] array = values();
 
-        return array[mod((ordinal() - 1), 8)];
+        return array[mod((ordinal() - 1))];
     }
 
     public Direction previous(int nb){
 
         Direction[] array = values();
 
-        return array[mod((ordinal() - nb), 8)];
+        return array[mod((ordinal() - nb))];
     }
 }

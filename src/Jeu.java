@@ -78,7 +78,7 @@ public class Jeu {
 
     }
 
-    public static void clearConsole() {
+    private void clearConsole() {
         try{
 
             if(System.getProperty("os.name").contains("Windows")){
@@ -91,7 +91,10 @@ public class Jeu {
                 System.out.print("\033\143");
             }
         } 
-        catch (IOException | InterruptedException ex){}
+        catch (IOException | InterruptedException ex){
+
+            ex.printStackTrace();
+        }
     }
 
     private void play(){
@@ -131,7 +134,9 @@ public class Jeu {
 
             cons.format(this.plate.toString());
 
-            action = cons.readLine("%nQue faire ?%n j : jouer coup%n m : marquer une case%n s : sauvegarder%n q : quitter%n");
+            cons.format("%nNombre de mines : %d%nNombre de cases marquées : %d%n", this.plate.getNbMines(), this.plate.getNbFlags());
+
+            action = cons.readLine("%nQue faire ?%n j : jouer coup%n m : marquer/démarquer une case%n s : sauvegarder%n q : quitter%n");
 
             if(action.equals("j") || action.equals("J")){
 
@@ -162,7 +167,14 @@ public class Jeu {
                     column = Integer.parseInt(cons.readLine("%nRentrez la colonne :"));
                 }while(column > this.plate.getNbColumn() && column < 1);
 
-                this.plate.setCaseFlag(row -1, column - 1);
+                if(this.plate.getCase(row - 1, column - 1).isFlaged()){
+
+                    this.plate.removeCaseFlag(row - 1, column - 1);
+                }
+                else {
+
+                    this.plate.setCaseFlag(row -1, column - 1);
+                }
             }
             
             else if(action.equals("s") || action.equals("S")){

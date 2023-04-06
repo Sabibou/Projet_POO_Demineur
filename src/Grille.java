@@ -9,6 +9,7 @@ public class Grille {
     private int nbRow;
     private int nbColumn;
     private int discovered;
+    private int nbFlaged;
     private LinkedList<Case> plate;
 
     public Grille(){
@@ -16,7 +17,7 @@ public class Grille {
         this.nbColumn = 0;
         this.nbMine = 0;
         this.nbRow = 0;
-        this.plate = new LinkedList<Case>();
+        this.plate = new LinkedList<>();
         this.discovered = 0;
     }
 
@@ -118,8 +119,8 @@ public class Grille {
 
             Random rnd = new Random();
             int nb = 0;
-            int row = 0;
-            int column = 0;
+            int row;
+            int column;
             Case c;
 
             while(nb < this.nbMine){
@@ -217,31 +218,9 @@ public class Grille {
         }
         
     }
-
-
-    public Case[][] toArray(){
-
-        Case[][] array = new Case[this.nbRow][this.nbColumn];
-
-        Case c;
-
-        for(int i=0; i<nbRow; i++){
-
-            c = this.plate.get(i*2);
-
-            for(int j=0; j<nbColumn; j++){
-
-                array[i][j] = c;
-                c = c.getVoisin(Direction.DROITE);
-
-            }
-        }
-
-        return array;
-    }
     
 
-    public int isAllDiscorvered(){
+    public int isAllDiscovered(){
 
         return this.nbColumn * this.nbRow - this.nbMine <= this.discovered ? 1 : 0;
     }
@@ -261,6 +240,11 @@ public class Grille {
         return this.nbMine;
     }
 
+    public int getNbFlags(){
+
+        return this.nbFlaged;
+    }
+
     public void setDiscovered(int discovered){
 
         this.discovered = discovered;
@@ -273,31 +257,37 @@ public class Grille {
 
     public void setCaseFlag(int row, int column){
 
-        this.getCase(row, column).setFlag();
+        if(this.getCase(row, column).setFlag()){
+
+            this.nbFlaged++;
+        }
     }
 
     public void removeCaseFlag(int row, int column){
 
-        this.getCase(row, column).removeFlag();
+        if(this.getCase(row, column).removeFlag()){
+
+            this.nbFlaged-= 1;
+        }
     }
 
     public int play(int nbRow, int nbColumn){
 
-        return this.uncover(nbRow, nbColumn) > 0 ? this.isAllDiscorvered() : -1;
+        return this.uncover(nbRow, nbColumn) > 0 ? this.isAllDiscovered() : -1;
     }
 
     @Override
     public String toString(){
 
-        String s = "%n";
+        StringBuilder s = new StringBuilder("%n");
         Case currentC;
 
         for(int i=1; i<=nbColumn; i++){
 
-            s += " " + i + "    ";
+            s.append(" ").append(i).append("    ");
         }
 
-        s += "%n%n";
+        s.append("%n%n");
 
         for(int i=0; i<this.nbRow; i++){
 
@@ -305,14 +295,14 @@ public class Grille {
 
             for(int j=1; j<nbColumn; j++){
                 
-                s += currentC.toString() + " | ";
+                s.append(currentC.toString()).append(" | ");
                 currentC = currentC.getVoisin(Direction.DROITE);
             }
 
-            s += currentC.toString() + " |   " + (i+1) + "%n";
+            s.append(currentC.toString()).append(" |   ").append(i + 1).append("%n");
             //s += " |   " + i+1 + "%n";
         }
 
-        return s;
+        return s.toString();
     }
 }

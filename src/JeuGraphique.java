@@ -1,28 +1,23 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
-import javax.swing.event.*;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.*;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.color.*;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JLabel;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException; 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.imageio.ImageIO;
 
 public class JeuGraphique extends JFrame implements ActionListener, MouseInputListener{
     
@@ -34,16 +29,16 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
     JMenuItem save;
     JMenuItem load;
     JLabel mineLabel;
+    JLabel flagLabel;
     JMenuBar mb;
     JMenu menu;
     JPanel p; 
-    Font f = new Font("SERIF", 1, 40);
-    Font f1 = new Font("SERIF", 1, 30);
+    Font f = new Font("SERIF", Font.BOLD, 40);
+    Font f1 = new Font("SERIF", Font.BOLD, 30);
     JTextField inputNbRow;
     JTextField inputNbColumn;
     JTextField pourcentNbMine;
     int state;
-    JLabel text;
     Icon mine = new ImageIcon("./img/mine.png");
     Icon flag = new ImageIcon("./img/flag.png");
 
@@ -52,7 +47,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         this.plate = new Grille(nbRow, nbColumn, (float)pourcentMine/100);
         this.plate.fillMine();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(2000, 2000));;
+        this.setPreferredSize(new Dimension(2000, 2000));
 
         p = new JPanel();
 
@@ -100,6 +95,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         save = new JMenuItem("Save");
         load = new JMenuItem("Load");
         mineLabel = new JLabel("mines: " + this.plate.getNbMines());
+        flagLabel = new JLabel("flags: " + this.plate.getNbFlags() + " ");
         inputNbRow = new JTextField("Nb lignes : 1-20");
         inputNbColumn = new JTextField("Nb colonnes : 1-20");
         pourcentNbMine = new JTextField("Pourcentage mines : 0-100");
@@ -109,6 +105,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         save.setFont(f);
         load.setFont(f);
         mineLabel.setFont(f);
+        flagLabel.setFont(f);
         inputNbRow.setFont(f1);
         inputNbColumn.setFont(f1);
         pourcentNbMine.setFont(f1);
@@ -124,6 +121,7 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
         mb.add(inputNbRow);
         mb.add(inputNbColumn);
         mb.add(pourcentNbMine);
+        mb.add(flagLabel);
         mb.add(mineLabel);
         this.setJMenuBar(mb);
 
@@ -261,6 +259,8 @@ public class JeuGraphique extends JFrame implements ActionListener, MouseInputLi
                             this.plate.removeCaseFlag(row, column);
                             buttons[row][column].setIcon(null);
                         }
+
+                        flagLabel.setText("flags: " + this.plate.getNbFlags() + " ");
                     }
                 }
             }
