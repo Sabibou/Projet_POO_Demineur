@@ -1,0 +1,14 @@
+@startuml Demineur
+skinparam classAttributeIconSize 0
+class Case{
+    -mine : boolean
+    -etat : int
+    -voisins : EnumMap 
+    +getVoisin(d : Direction) : Case
+    +getEtat() : int
+    -createLink(d : )
+
+
+}
+
+@enduml

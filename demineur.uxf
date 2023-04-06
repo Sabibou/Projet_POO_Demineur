@@ -1,0 +1,72 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>50</x><y>60</y><w>210</w><h>310</h></coordinates><panel_attributes>Case
+--
+-mine : boolean
+-etat : int
+-voisins : EnumMap 
+--
++getVoisin(d : Direction) : Case
++getEtat() : int
+-createLink(d : Direction, c : Case, recursive: boolean) : void
++addVoisins(d: Direction, c : Case) : void
++setMine() : void
++isMined() : boolean
++isDiscovered() : boolean
++countNextMines() : int
++uncover() : int
++setFlag() : void
++ removeFlag() : void
++isFlaged() : boolean
++toString() : String
++toString2() : String
+group=group-0</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>410</x><y>40</y><w>210</w><h>280</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
+Direction
+--
+GAUCHE
+HAUT_GAUCHE
+HAUT
+HAUT_DROITE
+DROITE
+BAS_DROITE
+BAS
+BAS_GAUCHE
+--
++opposite() : Direction
+-mod(n : int, m: int) : int
++next() : Direction
++next(nb : int) : Direction
++previous() : Direction
++previous(nb : int) : Direction
+
+group=group-1</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>410</x><y>340</y><w>210</w><h>350</h></coordinates><panel_attributes>Grille
+--
+-nbMine : int
+-nbRow : int
+-nbColumn : int
+-discovered : int
+-plate : LinkedList
+--
++getCase(row : int, column : int) : Case
++fillMine() : void
+-uncover(row : int, column : int) : int
++addRow(array : Case[]) : void
++save() : void
++toArray() : Case[][]
++isAllDiscovered() : int
++getNbColumn() : int
++getNbRow() : int
++getNbMines() : int
++setDiscovered(discovered : int) : void
++setNbMines(nbMine : int) : void
++setCaseFlag(row : int, column : int) : void
++removeCaseFlag(row : int, column : int) : void
++toString() : String</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>70</x><y>400</y><w>210</w><h>190</h></coordinates><panel_attributes>Jeu
+--
+-cons : Console
+-plate : Grille
+--
+-initPlate(nbRow : int, nColumn : int, pourcentMine : int) : void
+-load() : void
+_+clearConsole() : void_
+-play() : void
+_+main(args : String[]) : void_
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
