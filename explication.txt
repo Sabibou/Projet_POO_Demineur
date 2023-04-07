@@ -1,0 +1,10 @@
+La fonction public void addVoisins(Direction d, Case c) permet d'ajouter une case à la grille à partir d'une autre case déjà présente dans cette grille.
+Cette fonction permet de garantir qu'avec l'ajout d'une nouvelle case les liens entre les cases ne soient pas brisés.
+Pour mieux comprendre utilisons un exemple. Ici, on ajoute la case c à partir de la case this et la direction droite.
+A noter que les directions appartiennent à une énumération. Les fonctions next() et previous() permettent de passer d'une direction à une autre dans le sens des aiguilles d'une montre et inversement respectivement.
+Tout d'abord, on va créer un lien entre ces deux cases. Donc on ajoute à this c comme voisin droit et à c this comme voisin gauche (la fonction createLink se charge de ça).
+Or, si on veut maintenir la cohésion de la grille, toutes les cases qui sont voisines à this et à c doivent être liés à c aussi.
+C'est les étapes 1 et 2, en rouge et en vert respectivement. Pour créer ces liens on part maintenant de c, car on sait qu'il n'est pas nul contrairement aux autres cases,
+et on manipule la direction d pasée en paramètre pour qu'elle soit bonne.
+Or, c et les cases en vert ont aussi d'autres cases voisines en commum. On doit alors créer des liens si possible avec elles.
+C'est les étapes 3 et 4, en magenta et bleu respectivement. Le procédé utilisé est le même que précédemment.
